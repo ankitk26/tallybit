@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+import { QueryClient } from "@tanstack/react-query";
+import { createRootRouteWithContext } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   Outlet,
@@ -8,7 +10,9 @@ import {
 } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   head: () => ({
     meta: [
       {
