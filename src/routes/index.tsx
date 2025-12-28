@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { convexQuery } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -10,5 +11,10 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   const { data } = useQuery(convexQuery(api.health.check));
 
-  return <div className="font-mono">{JSON.stringify(data)}</div>;
+  return (
+    <div>
+      <pre>{JSON.stringify(data)}</pre>
+      <Button variant="default">Click here</Button>
+    </div>
+  );
 }
