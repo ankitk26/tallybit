@@ -30,8 +30,6 @@ function RouteComponent() {
       </Button>
 
       <UserGroups />
-
-      <Button variant="default">Click here</Button>
     </div>
   );
 }

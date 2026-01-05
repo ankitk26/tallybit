@@ -10,7 +10,9 @@ export const getForCurrentUser = query({
     }
     const groupsHavingUserAsMember = await ctx.db
       .query("groupMembers")
-      .withIndex("by_group_and_user", (q) => q.eq("userId", user.subject))
+      .withIndex("by_group_and_member", (q) =>
+        q.eq("memberEmail", user.email ?? user.subject),
+      )
       .collect();
 
     const groupsList = await Promise.all(
@@ -24,6 +26,7 @@ export const create = mutation({
   args: {
     title: v.string(),
     description: v.string(),
+    groupMemberEmails: v.array(v.string()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
@@ -37,7 +40,15 @@ export const create = mutation({
     });
     await ctx.db.insert("groupMembers", {
       groupId,
-      userId: user.subject,
+      memberEmail: user.email ?? user.subject,
     });
+    await Promise.all(
+      args.groupMemberEmails.map((email) =>
+        ctx.db.insert("groupMembers", {
+          groupId,
+          memberEmail: email,
+        }),
+      ),
+    );
   },
 });

@@ -11,6 +11,6 @@ export default defineSchema({
 
   groupMembers: defineTable({
     groupId: v.id("groups"),
-    userId: v.string(),
-  }).index("by_group_and_user", ["userId", "groupId"]),
+    memberEmail: v.string(),
+  }).index("by_group_and_member", ["memberEmail", "groupId"]),
 });
