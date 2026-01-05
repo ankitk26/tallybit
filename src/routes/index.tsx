@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { convexQuery } from "@convex-dev/react-query";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { api } from "convex/_generated/api";
-import { IconLoader } from "@tabler/icons-react";
+import UserGroups from "@/components/user-groups";
 import { authClient } from "@/lib/auth-client";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -16,12 +13,6 @@ export const Route = createFileRoute("/")({
 });
 
 function RouteComponent() {
-  const { data, isPending } = useQuery(convexQuery(api.health.check));
-
-  if (isPending) {
-    return <IconLoader className="animate-spin" />;
-  }
-
   return (
     <div>
       <Button
@@ -37,7 +28,9 @@ function RouteComponent() {
       >
         Log out
       </Button>
-      <pre>{JSON.stringify(data)}</pre>
+
+      <UserGroups />
+
       <Button variant="default">Click here</Button>
     </div>
   );
