@@ -5,9 +5,10 @@ import { api } from "convex/_generated/api";
 import GroupForm from "./group-form";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Link } from "@tanstack/react-router";
 
 export default function UserGroups() {
-  const { data, isPending } = useQuery(
+  const { data: groups, isPending } = useQuery(
     convexQuery(api.groups.getForCurrentUser, {}),
   );
 
@@ -18,7 +19,19 @@ export default function UserGroups() {
   return (
     <div>
       <h1>Your groups</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+
+      <div className="flex flex-col my-8">
+        {groups?.map((group) => (
+          <Link
+            key={group?._id}
+            to="/groups/$groupId"
+            params={{ groupId: group?._id ?? "" }}
+            className="hover:underline"
+          >
+            {group?.title}
+          </Link>
+        ))}
+      </div>
 
       <Dialog>
         <DialogTrigger>

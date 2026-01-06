@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const getForCurrentUser = query({
@@ -18,6 +18,7 @@ export const getForCurrentUser = query({
     const groupsList = await Promise.all(
       groupsHavingUserAsMember.map((group) => ctx.db.get(group.groupId)),
     );
+
     return groupsList;
   },
 });
@@ -50,5 +51,33 @@ export const create = mutation({
         }),
       ),
     );
+  },
+});
+
+export const get = query({
+  args: {
+    groupId: v.id("groups"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) return null;
+
+    const group = await ctx.db.get(args.groupId);
+    if (!group) {
+      throw new ConvexError("Invalid request");
+    }
+
+    const groupMember = await ctx.db
+      .query("groupMembers")
+      .withIndex("by_group_and_member", (q) =>
+        q.eq("memberEmail", user.email ?? "").eq("groupId", args.groupId),
+      )
+      .collect();
+
+    if (!groupMember) {
+      throw new ConvexError("Invalid request");
+    }
+
+    return group;
   },
 });

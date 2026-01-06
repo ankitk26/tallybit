@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
+import LogoutButton from "@/components/logout-button";
 import UserGroups from "@/components/user-groups";
-import { authClient } from "@/lib/auth-client";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -15,20 +14,7 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <div>
-      <Button
-        onClick={async () =>
-          await authClient.signOut({
-            fetchOptions: {
-              onSuccess: () => {
-                location.reload();
-              },
-            },
-          })
-        }
-      >
-        Log out
-      </Button>
-
+      <LogoutButton />
       <UserGroups />
     </div>
   );
